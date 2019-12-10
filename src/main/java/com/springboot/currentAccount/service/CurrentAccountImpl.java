@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.springboot.currentAccount.client.EnterpriseClient;
 import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
 import com.springboot.currentAccount.dto.CurrentAccountDto;
@@ -29,7 +30,10 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	UtilConvert convert;
 	
 	@Autowired
-	PersonalClient webClient;
+	PersonalClient webClientPer;
+	
+	@Autowired
+	EnterpriseClient webClientEnter;
 
 	
 	@Override
@@ -81,7 +85,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 
 				p.setIdCuenta(ca.getId());
 
-				webClient.save(p).block();
+				webClientPer.save(p).block();
 
 			});
 
@@ -90,10 +94,5 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 		
 		
 	}
-
-
-	
-	
-
 
 }
