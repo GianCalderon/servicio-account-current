@@ -1,4 +1,4 @@
-package com.springboot.currentAccount.convert;
+package com.springboot.currentAccount.util;
 
 import org.springframework.stereotype.Component;
 

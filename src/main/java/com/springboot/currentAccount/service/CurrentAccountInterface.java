@@ -15,6 +15,8 @@ public interface CurrentAccountInterface {
 	public Mono<CurrentAccount> update(CurrentAccount currentAccount ,String id);
 	public Mono<Void> delete(CurrentAccount currentAccount);
 	
+	public Mono<CurrentAccountDto> saveDto(CurrentAccountDto currentAccountDto);
+	
 	
 	
 }

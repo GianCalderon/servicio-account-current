@@ -5,8 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
+import com.springboot.currentAccount.dto.CurrentAccountDto;
 import com.springboot.currentAccount.repo.CurrentAccountRepo;
+import com.springboot.currentAccount.util.UtilConvert;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,12 +18,18 @@ import reactor.core.publisher.Mono;
 public class CurrentAccountImpl implements CurrentAccountInterface {
 
 	
-	private static final Logger log = LoggerFactory.getLogger(CurrentAccountImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CurrentAccountImpl.class);
 	
 	
 	
 	@Autowired
 	CurrentAccountRepo repo;
+	
+	@Autowired
+	UtilConvert convert;
+	
+	@Autowired
+	PersonalClient webClient;
 
 	
 	@Override
@@ -59,6 +68,27 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	public Mono<Void> delete(CurrentAccount currentAccount) {
 		
 		return repo.delete(currentAccount);
+	}
+
+	@Override
+	public Mono<CurrentAccountDto> saveDto(CurrentAccountDto currentAccountDto) {
+		
+		LOGGER.info(currentAccountDto.toString());
+
+		return save(convert.convertCurrentAccount(currentAccountDto)).flatMap(ca -> {
+
+			currentAccountDto.getHolders().forEach(p -> {
+
+				p.setIdCuenta(ca.getId());
+
+				webClient.save(p).block();
+
+			});
+
+			return Mono.just(currentAccountDto);
+		});
+		
+		
 	}
 
 

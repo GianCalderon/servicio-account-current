@@ -1,4 +1,4 @@
-package com.springboot.currentAccount.serviceDto;
+package com.springboot.currentAccount.client;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,17 +18,17 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
-public class PersonalImplDto {
+public class PersonalClient {
 	
 	
-private static final Logger log = LoggerFactory.getLogger(PersonalImplDto.class);
+private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClient.class);
 	
 	@Autowired
 	private WebClient client;
 	
 	public Flux<PersonalDto> findAll() {
 		
-		return client.get().accept(MediaType.APPLICATION_JSON_UTF8)
+		return client.get().accept(MediaType.APPLICATION_JSON)
 				.exchange()
 				.flatMapMany(response ->response.bodyToFlux(PersonalDto.class));
 	}
@@ -39,7 +39,7 @@ private static final Logger log = LoggerFactory.getLogger(PersonalImplDto.class)
 		Map<String,Object> param=new HashMap<String,Object>();
 		
 		return client.get().uri("/{id}",param)
-				.accept(MediaType.APPLICATION_JSON_UTF8)
+				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
 				.bodyToMono(PersonalDto.class);
 		        
@@ -50,11 +50,11 @@ private static final Logger log = LoggerFactory.getLogger(PersonalImplDto.class)
 	
 	public Mono<PersonalDto> save(PersonalDto personalDto) {
 		
-		log.info("listo a enviar: "+personalDto.toString());
+		LOGGER.info("listo a enviar: "+personalDto.toString());
 		
 		return client.post()
-			   .accept(MediaType.APPLICATION_PROBLEM_JSON_UTF8)
-			   .contentType(MediaType.APPLICATION_PROBLEM_JSON_UTF8)
+			   .accept(MediaType.APPLICATION_JSON)
+			   .contentType(MediaType.APPLICATION_JSON)
 		       .body(BodyInserters.fromValue(personalDto))
 			   .retrieve()
 			   .bodyToMono(PersonalDto.class);
@@ -75,8 +75,8 @@ private static final Logger log = LoggerFactory.getLogger(PersonalImplDto.class)
 	public Mono<PersonalDto> update(PersonalDto personalDto, String id) {
 		
 		return client.post()
-				   .accept(MediaType.APPLICATION_PROBLEM_JSON_UTF8)
-				   .contentType(MediaType.APPLICATION_PROBLEM_JSON_UTF8)
+				   .accept(MediaType.APPLICATION_JSON)
+				   .contentType(MediaType.APPLICATION_JSON)
 				   .syncBody(personalDto)
 				   .retrieve()
 				   .bodyToMono(PersonalDto.class);

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.springboot.currentAccount.document.CurrentAccount;
 import com.springboot.currentAccount.dto.CurrentAccountDto;
 import com.springboot.currentAccount.service.CurrentAccountImpl;
-import com.springboot.currentAccount.serviceDto.CurrentAccountImplDto;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,16 +29,11 @@ import reactor.core.publisher.Mono;
 public class CurrentAccountController {
 
 	
-	private static final Logger log = LoggerFactory.getLogger(CurrentAccountController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CurrentAccountController.class);
 
 	@Autowired
 	CurrentAccountImpl service;
-	
-	@Autowired
-	CurrentAccountImplDto serviceDto;
 
-//	@Autowired
-//	CurrentAccountImplDto serviceDto;
 
 	@GetMapping
 	public Mono<ResponseEntity<Flux<CurrentAccount>>> toList() {
@@ -88,9 +82,9 @@ public class CurrentAccountController {
 	@PostMapping("/saveDto")
 	public Mono<ResponseEntity<CurrentAccountDto>> saveDto(@RequestBody CurrentAccountDto currentAccountDto) {
 
-		log.info(currentAccountDto.toString());
+		LOGGER.info(currentAccountDto.toString());
 
-		return serviceDto.save(currentAccountDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+		return service.saveDto(currentAccountDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
 				.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}
