@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -24,11 +25,11 @@ public class PersonalClient {
 private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClient.class);
 	
 	@Autowired
-	private WebClient client;
+	private WebClient clientPer;
 	
 	public Flux<PersonalDto> findAll() {
 		
-		return client.get().accept(MediaType.APPLICATION_JSON)
+		return clientPer.get().accept(MediaType.APPLICATION_JSON)
 				.exchange()
 				.flatMapMany(response ->response.bodyToFlux(PersonalDto.class));
 	}
@@ -38,7 +39,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClient.clas
 		
 		Map<String,Object> param=new HashMap<String,Object>();
 		
-		return client.get().uri("/{id}",param)
+		return clientPer.get().uri("/{id}",param)
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
 				.bodyToMono(PersonalDto.class);
@@ -52,7 +53,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClient.clas
 		
 		LOGGER.info("listo a enviar: "+personalDto.toString());
 		
-		return client.post()
+		return clientPer.post()
 			   .accept(MediaType.APPLICATION_JSON)
 			   .contentType(MediaType.APPLICATION_JSON)
 		       .body(BodyInserters.fromValue(personalDto))
@@ -66,7 +67,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClient.clas
 
 	public Mono<Void> delete(String id) {
 		
-		return client.delete()
+		return clientPer.delete()
 				.uri("/{id}",Collections.singletonMap("id",id))
 				.exchange()
 				.then();
@@ -74,7 +75,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClient.clas
 
 	public Mono<PersonalDto> update(PersonalDto personalDto, String id) {
 		
-		return client.post()
+		return clientPer.post()
 				   .accept(MediaType.APPLICATION_JSON)
 				   .contentType(MediaType.APPLICATION_JSON)
 				   .syncBody(personalDto)

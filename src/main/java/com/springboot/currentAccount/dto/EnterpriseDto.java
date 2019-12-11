@@ -9,6 +9,6 @@ public class EnterpriseDto {
 	private String tipoDoc;
 	private String numDoc;
 	private String name;
-	private String address;
+	private String andress;
 
 }

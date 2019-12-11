@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class CurrentAccountDto {
+public class CurrentAccountPerDto {
 
 	private String numberAccount;
 	private String state;

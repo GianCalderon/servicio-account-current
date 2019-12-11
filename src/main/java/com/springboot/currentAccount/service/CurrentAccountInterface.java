@@ -1,7 +1,8 @@
 package com.springboot.currentAccount.service;
 
 import com.springboot.currentAccount.document.CurrentAccount;
-import com.springboot.currentAccount.dto.CurrentAccountDto;
+import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
+import com.springboot.currentAccount.dto.CurrentAccountPerDto;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,7 +16,8 @@ public interface CurrentAccountInterface {
 	public Mono<CurrentAccount> update(CurrentAccount currentAccount ,String id);
 	public Mono<Void> delete(CurrentAccount currentAccount);
 	
-	public Mono<CurrentAccountDto> saveDto(CurrentAccountDto currentAccountDto);
+	public Mono<CurrentAccountPerDto> saveDto(CurrentAccountPerDto currentAccountPerDto);
+	public Mono<CurrentAccountEnterDto> saveDto(CurrentAccountEnterDto currentAccountEnterDto);
 	
 	
 	

@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.currentAccount.document.CurrentAccount;
-import com.springboot.currentAccount.dto.CurrentAccountDto;
+import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
+import com.springboot.currentAccount.dto.CurrentAccountPerDto;
 import com.springboot.currentAccount.service.CurrentAccountImpl;
 
 import reactor.core.publisher.Flux;
@@ -79,12 +80,21 @@ public class CurrentAccountController {
 
 	}
 
-	@PostMapping("/saveDto")
-	public Mono<ResponseEntity<CurrentAccountDto>> saveDto(@RequestBody CurrentAccountDto currentAccountDto) {
+	@PostMapping("/savePer")
+	public Mono<ResponseEntity<CurrentAccountPerDto>> saveDto(@RequestBody CurrentAccountPerDto currentAccountPerDto) {
 
-		LOGGER.info(currentAccountDto.toString());
+		LOGGER.info(currentAccountPerDto.toString());
 
-		return service.saveDto(currentAccountDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+		return service.saveDto(currentAccountPerDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+				.contentType(MediaType.APPLICATION_JSON).body(s));
+
+	}
+	@PostMapping("/saveEnter")
+	public Mono<ResponseEntity<CurrentAccountEnterDto>> saveDto(@RequestBody CurrentAccountEnterDto currentAccountEnterDto) {
+
+		LOGGER.info(currentAccountEnterDto.toString());
+
+		return service.saveDto(currentAccountEnterDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
 				.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}

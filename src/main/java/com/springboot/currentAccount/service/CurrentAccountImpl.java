@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import com.springboot.currentAccount.client.EnterpriseClient;
 import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
-import com.springboot.currentAccount.dto.CurrentAccountDto;
+import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
+import com.springboot.currentAccount.dto.CurrentAccountPerDto;
+import com.springboot.currentAccount.dto.EnterpriseDto;
 import com.springboot.currentAccount.repo.CurrentAccountRepo;
 import com.springboot.currentAccount.util.UtilConvert;
 
@@ -75,24 +77,46 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	}
 
 	@Override
-	public Mono<CurrentAccountDto> saveDto(CurrentAccountDto currentAccountDto) {
+	public Mono<CurrentAccountPerDto> saveDto(CurrentAccountPerDto currentAccountPerDto) {
 		
-		LOGGER.info(currentAccountDto.toString());
+		LOGGER.info(currentAccountPerDto.toString());
 
-		return save(convert.convertCurrentAccount(currentAccountDto)).flatMap(ca -> {
+		return save(convert.convertCurrentAccountPer(currentAccountPerDto)).flatMap(ca -> {
 
-			currentAccountDto.getHolders().forEach(p -> {
+			currentAccountPerDto.getHolders().forEach(p -> {
 
 				p.setIdCuenta(ca.getId());
-
 				webClientPer.save(p).block();
 
 			});
 
-			return Mono.just(currentAccountDto);
+			return Mono.just(currentAccountPerDto);
 		});
 		
 		
 	}
+	
+	@Override
+	public Mono<CurrentAccountEnterDto> saveDto(CurrentAccountEnterDto currentAccountEnterDto) {
+		
+		LOGGER.info("service: 2"+currentAccountEnterDto.toString());
+
+		return save(convert.convertCurrentAccountEnter(currentAccountEnterDto)).flatMap(ca -> {
+
+			
+			EnterpriseDto enterprise=new EnterpriseDto();
+			
+			enterprise.setIdCuenta(ca.getId());
+			
+			webClientEnter.save(enterprise).block();
+
+			return Mono.just(currentAccountEnterDto);
+		});
+		
+		
+	}
+	
+	
+	
 
 }

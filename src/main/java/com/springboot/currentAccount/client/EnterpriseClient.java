@@ -7,7 +7,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -16,18 +18,17 @@ import com.springboot.currentAccount.dto.EnterpriseDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Service
 public class EnterpriseClient {
 
-	
-	
 private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.class);
 	
 	@Autowired
-	private WebClient client;
+	private WebClient clientEmp;
 	
 	public Flux<EnterpriseDto> findAll() {
 		
-		return client.get().accept(MediaType.APPLICATION_JSON)
+		return clientEmp.get().accept(MediaType.APPLICATION_JSON)
 				.exchange()
 				.flatMapMany(response ->response.bodyToFlux(EnterpriseDto.class));
 	}
@@ -37,7 +38,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 		
 		Map<String,Object> param=new HashMap<String,Object>();
 		
-		return client.get().uri("/{id}",param)
+		return clientEmp.get().uri("/{id}",param)
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
 				.bodyToMono(EnterpriseDto.class);
@@ -51,7 +52,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 		
 		LOGGER.info("listo a enviar: "+enterpriseDto.toString());
 		
-		return client.post()
+		return clientEmp.post()
 			   .accept(MediaType.APPLICATION_JSON)
 			   .contentType(MediaType.APPLICATION_JSON)
 		       .body(BodyInserters.fromValue(enterpriseDto))
@@ -65,7 +66,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 
 	public Mono<Void> delete(String id) {
 		
-		return client.delete()
+		return clientEmp.delete()
 				.uri("/{id}",Collections.singletonMap("id",id))
 				.exchange()
 				.then();
@@ -73,7 +74,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 
 	public Mono<EnterpriseDto> update(EnterpriseDto enterpriseDto, String id) {
 		
-		return client.post()
+		return clientEmp.post()
 				   .accept(MediaType.APPLICATION_JSON)
 				   .contentType(MediaType.APPLICATION_JSON)
 				   .syncBody(enterpriseDto)
