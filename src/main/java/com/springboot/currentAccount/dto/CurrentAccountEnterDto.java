@@ -6,6 +6,7 @@ import lombok.Data;
 public class CurrentAccountEnterDto {
 
 	private String numberAccount;
+	private String tea;
 	private String state;
 	private int balance;
 	private EnterpriseDto holders;

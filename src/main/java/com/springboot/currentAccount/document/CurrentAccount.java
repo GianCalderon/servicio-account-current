@@ -11,7 +11,9 @@ public class CurrentAccount {
 	
 	@Id
 	private String id;
+	private String name;
 	private String numberAccount;
+	private String tea;
 	private String state;
 	private int balance;
 

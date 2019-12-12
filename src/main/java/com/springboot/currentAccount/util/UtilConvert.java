@@ -14,6 +14,7 @@ public class UtilConvert {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
+		currentAccount.setName("Cuenta-Corriente");
 		currentAccount.setNumberAccount(currentAccountPerDto.getNumberAccount());
 		currentAccount.setState(currentAccountPerDto.getState());
 		currentAccount.setBalance(currentAccountPerDto.getBalance());
@@ -27,6 +28,7 @@ public class UtilConvert {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
+		currentAccount.setName("Cuenta-Corriente");
 		currentAccount.setNumberAccount(currentAccountEnterDto.getNumberAccount());
 		currentAccount.setState(currentAccountEnterDto.getState());
 		currentAccount.setBalance(currentAccountEnterDto.getBalance());

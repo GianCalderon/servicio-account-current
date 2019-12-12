@@ -99,22 +99,19 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	@Override
 	public Mono<CurrentAccountEnterDto> saveDto(CurrentAccountEnterDto currentAccountEnterDto) {
 		
-		LOGGER.info("service: 2"+currentAccountEnterDto.toString());
+		LOGGER.info("service:"+currentAccountEnterDto.toString());
 
-		return save(convert.convertCurrentAccountEnter(currentAccountEnterDto)).flatMap(ca -> {
+		return save(convert.convertCurrentAccountEnter(currentAccountEnterDto)).flatMap(sa -> {
 
+			currentAccountEnterDto.getHolders().setIdCuenta(sa.getId());
+			webClientEnter.save(currentAccountEnterDto.getHolders()).block();
 			
-			EnterpriseDto enterprise=new EnterpriseDto();
-			
-			enterprise.setIdCuenta(ca.getId());
-			
-			webClientEnter.save(enterprise).block();
 
 			return Mono.just(currentAccountEnterDto);
 		});
 		
 		
-	}
+  }
 	
 	
 	
