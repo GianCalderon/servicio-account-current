@@ -1,4 +1,4 @@
-package com.springboot.currentAccount;
+package com.springboot.currentAccount.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -10,7 +10,7 @@ public class CurrentAccountPerDto {
 	private String numberAccount;
 	private String tea;
 	private String state;
-	private int balance;
+	private Double balance;
 	private List<PersonalDto> holders;
 	
 	

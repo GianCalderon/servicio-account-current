@@ -1,5 +1,8 @@
 package com.springboot.currentAccount.service;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +13,6 @@ import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
 import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
-import com.springboot.currentAccount.dto.EnterpriseDto;
 import com.springboot.currentAccount.repo.CurrentAccountRepo;
 import com.springboot.currentAccount.util.UtilConvert;
 
@@ -53,6 +55,11 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	@Override
 	public Mono<CurrentAccount> save(CurrentAccount currentAccount) {
 		
+		currentAccount.setCreateDate(new Date());
+		currentAccount.setUpdateDate(new Date());
+		currentAccount.setName("Cuenta-Corriente");
+		currentAccount.setIdOperation(new ArrayList<String>());
+		
 		return repo.save(currentAccount);
 	}
 
@@ -61,9 +68,15 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 		
 		return repo.findById(id).flatMap(s -> {
 
+			s.setName(currentAccount.getName());
 			s.setNumberAccount(currentAccount.getNumberAccount());
-			s.setState(currentAccount.getState());
 			s.setBalance(currentAccount.getBalance());
+			s.setState(currentAccount.getState());
+			s.setTea(currentAccount.getTea());
+			s.setUpdateDate(currentAccount.getUpdateDate());
+			s.setCreateDate(currentAccount.getCreateDate());
+			s.setIdOperation(currentAccount.getIdOperation());
+			
 			
 			return repo.save(s);
 			});
@@ -112,6 +125,12 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 		
 		
   }
+	
+	@Override
+	public Mono<CurrentAccount> findByNumAccount(String numAccount) {
+		
+		return repo.findByNumberAccount(numAccount);
+	}
 	
 	
 	

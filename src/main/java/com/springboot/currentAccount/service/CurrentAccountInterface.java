@@ -18,6 +18,7 @@ public interface CurrentAccountInterface {
 	
 	public Mono<CurrentAccountPerDto> saveDto(CurrentAccountPerDto currentAccountPerDto);
 	public Mono<CurrentAccountEnterDto> saveDto(CurrentAccountEnterDto currentAccountEnterDto);
+	public Mono<CurrentAccount> findByNumAccount(String numAccount);
 	
 	
 	

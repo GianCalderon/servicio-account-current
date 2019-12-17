@@ -100,4 +100,17 @@ public class CurrentAccountController {
 	}
 	
 	
+	// OPERACIONES QUE EXPONEN SERVICIOS
+	
+	@GetMapping("/cuenta/{numAccount}")
+	public Mono<ResponseEntity<CurrentAccount>> searchByNumDoc(@PathVariable String numAccount) {
+		
+		LOGGER.info("NUMERO DE CUENTA :--->"+numAccount);
+
+		return service.findByNumAccount(numAccount).map(s -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(s))
+				.defaultIfEmpty(ResponseEntity.notFound().build());
+
+	}
+	
+	
 }
