@@ -22,6 +22,7 @@ import com.springboot.currentAccount.document.CurrentAccount;
 import com.springboot.currentAccount.dto.CuentaDto;
 import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
+import com.springboot.currentAccount.dto.EnterpriseDto;
 import com.springboot.currentAccount.dto.PersonalDto;
 import com.springboot.currentAccount.service.CurrentAccountImpl;
 
@@ -85,8 +86,12 @@ public class CurrentAccountController {
 		}).defaultIfEmpty(new ResponseEntity<Void>(HttpStatus.NOT_FOUND));
 
 	}
+	
+	
+	
+	// OPERACIONES QUE EXPONEN SERVICIOS
 
-	@PostMapping("/savePer")
+	@PostMapping("/personal")
 	public Mono<ResponseEntity<CurrentAccountPerDto>> saveDto(@RequestBody CurrentAccountPerDto currentAccountPerDto) {
 
 		LOGGER.info(currentAccountPerDto.toString());
@@ -95,20 +100,17 @@ public class CurrentAccountController {
 				.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}
-	@PostMapping("/saveEnter")
+	@PostMapping("/enterprise")
 	public Mono<ResponseEntity<CurrentAccountEnterDto>> saveDto(@RequestBody CurrentAccountEnterDto currentAccountEnterDto) {
 
-		LOGGER.info(currentAccountEnterDto.toString());
+		LOGGER.info("Controlle ----> : "+currentAccountEnterDto.toString());
 
 		return service.saveEnterDto(currentAccountEnterDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
 				.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}
 	
-	
-	
-	
-	// OPERACIONES QUE EXPONEN SERVICIOS
+
 	
 	@GetMapping("/cuenta/{numAccount}")
 	public Mono<ResponseEntity<CurrentAccount>> searchByNumDoc(@PathVariable String numAccount) {
@@ -120,12 +122,22 @@ public class CurrentAccountController {
 
 	}
 	
-	@PostMapping("/addAccount")
-	public Mono<ResponseEntity<PersonalDto>> saveAddDto(@RequestBody CuentaDto cuentaDto) {
+	@PostMapping("/addAccountPer")
+	public Mono<ResponseEntity<PersonalDto>> saveAddDtoPer(@RequestBody CuentaDto cuentaDto) {
 
 		LOGGER.info(cuentaDto.toString());
 
-		return service.saveAddCuenta(cuentaDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+		return service.saveAddCuentaPer(cuentaDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+				.contentType(MediaType.APPLICATION_JSON).body(s));
+
+	}
+	
+	@PostMapping("/addAccountEnt")
+	public Mono<ResponseEntity<EnterpriseDto>> saveAddDtoEnt(@RequestBody CuentaDto cuentaDto) {
+
+		LOGGER.info(cuentaDto.toString());
+
+		return service.saveAddCuentaEnt(cuentaDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
 				.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}

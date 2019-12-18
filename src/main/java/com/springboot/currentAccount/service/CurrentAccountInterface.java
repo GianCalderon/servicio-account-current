@@ -4,6 +4,7 @@ import com.springboot.currentAccount.document.CurrentAccount;
 import com.springboot.currentAccount.dto.CuentaDto;
 import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
+import com.springboot.currentAccount.dto.EnterpriseDto;
 import com.springboot.currentAccount.dto.PersonalDto;
 
 import reactor.core.publisher.Flux;
@@ -22,7 +23,8 @@ public interface CurrentAccountInterface {
 	public Mono<CurrentAccountEnterDto> saveEnterDto(CurrentAccountEnterDto currentAccountEnterDto);
 	public Mono<CurrentAccount> findByNumAccount(String numAccount);
 	
-	public Mono<PersonalDto> saveAddCuenta(CuentaDto cuentaDto);
+	public Mono<PersonalDto> saveAddCuentaPer(CuentaDto cuentaDto);
+	public Mono<EnterpriseDto> saveAddCuentaEnt(CuentaDto cuentaDto);
 	
 	
 	

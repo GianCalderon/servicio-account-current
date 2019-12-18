@@ -1,7 +1,6 @@
 package com.springboot.currentAccount.dto;
 
 import java.util.List;
-import java.util.Map;
 
 import lombok.Data;
 
@@ -16,7 +15,7 @@ public class PersonalDto {
 	private String apePat;
 	private String apeMat;
 	private String address;
-	private List<Map<String,String>> idCuentas;
+	private List<Cuenta> idCuentas;
 
 
 }

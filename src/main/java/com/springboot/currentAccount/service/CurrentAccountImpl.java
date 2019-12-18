@@ -14,9 +14,11 @@ import org.springframework.stereotype.Service;
 import com.springboot.currentAccount.client.EnterpriseClient;
 import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
+import com.springboot.currentAccount.dto.Cuenta;
 import com.springboot.currentAccount.dto.CuentaDto;
 import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
+import com.springboot.currentAccount.dto.EnterpriseDto;
 import com.springboot.currentAccount.dto.PersonalDto;
 import com.springboot.currentAccount.repo.CurrentAccountRepo;
 import com.springboot.currentAccount.util.UtilConvert;
@@ -42,7 +44,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	PersonalClient webClientPer;
 	
 	@Autowired
-	EnterpriseClient webClientEnter;
+	EnterpriseClient webClientEnt;
 
 	
 	@Override
@@ -123,8 +125,13 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 
 		return save(convert.convertCurrentAccountEnter(currentAccountEnterDto)).flatMap(sa -> {
 
-			currentAccountEnterDto.getHolders().setIdCuenta(sa.getId());
-			webClientEnter.save(currentAccountEnterDto.getHolders()).block();
+			
+			currentAccountEnterDto.getHolders().setIdAccount(sa.getId());
+			currentAccountEnterDto.getHolders().setNameAccount("Cuenta-Corriente");
+		
+		
+		
+			webClientEnt.save(currentAccountEnterDto.getHolders()).block();
 			
 
 			return Mono.just(currentAccountEnterDto);
@@ -140,13 +147,43 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	}
 
 	@Override
-	public Mono<PersonalDto> saveAddCuenta(CuentaDto cuentaDto) {
+	public Mono<PersonalDto> saveAddCuentaPer(CuentaDto cuentaDto) {
 		
 	    return repo.save(convert.convertCurrentAccount(cuentaDto)).flatMap(c->{
 	    	
 	    	return webClientPer.findById(cuentaDto.getDni()).flatMap(p->{
 	    		
-	    		LOGGER.info("FLUJO ---->: "+p.toString());
+	    		LOGGER.info("Flujo Inicial---->: "+p.toString());
+	    		
+	    		
+	    		List<Cuenta> lista=p.getIdCuentas();
+	            
+	             Cuenta cuenta=new Cuenta();
+	             
+	             cuenta.setNameAccount(c.getName());
+	             cuenta.setNumAccount(c.getId());
+	               lista.add(cuenta);
+	           
+	               p.setIdCuentas(lista);
+	             
+	             LOGGER.info("Flujo Final ---->: "+p.toString());
+	             
+	            return webClientPer.update(p,cuentaDto.getDni());
+	            
+	 
+	    	});
+	    	
+	    });
+	}
+	
+	@Override
+	public Mono<EnterpriseDto> saveAddCuentaEnt(CuentaDto cuentaDto) {
+		
+	    return repo.save(convert.convertCurrentAccount(cuentaDto)).flatMap(c->{
+	    	
+	    	return webClientEnt.findById(cuentaDto.getDni()).flatMap(p->{
+	    		
+	    		LOGGER.info("Flujo Inicial---->: "+p.toString());
 	    		
 	    		List<Map<String,String>> lista=p.getIdCuentas();
 	            
@@ -156,9 +193,9 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	           
 	             p.setIdCuentas(lista);
 	             
-	             LOGGER.info("FLUJO  22 ---->: "+p.toString());
+	             LOGGER.info("Flujo Final ---->: "+p.toString());
 	             
-	            return webClientPer.update(p,cuentaDto.getDni());
+	            return webClientEnt.update(p,cuentaDto.getDni());
 	            
 	 
 	    	});

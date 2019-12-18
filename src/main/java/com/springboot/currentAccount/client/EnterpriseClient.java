@@ -23,8 +23,10 @@ public class EnterpriseClient {
 
 private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.class);
 	
-	@Autowired
-	private WebClient clientEmp;
+     WebClient clientEmp = WebClient.create("http://localhost:8002/api/enterprise");	
+
+//	@Autowired
+//	private WebClient clientEmp;
 	
 	public Flux<EnterpriseDto> findAll() {
 		
@@ -36,9 +38,10 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 
 	public Mono<EnterpriseDto> findById(String id) {
 		
-		Map<String,Object> param=new HashMap<String,Object>();
+		LOGGER.info("Buscando con ID ---> "+id);
 		
-		return clientEmp.get().uri("/{id}",param)
+		return clientEmp.get()
+				.uri("/{id}",Collections.singletonMap("id",id))
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
 				.bodyToMono(EnterpriseDto.class);
@@ -50,7 +53,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 	
 	public Mono<EnterpriseDto> save(EnterpriseDto enterpriseDto) {
 		
-		LOGGER.info("listo a enviar: "+enterpriseDto.toString());
+		LOGGER.info("Listo para Guardar ---> "+enterpriseDto.toString());
 		
 		return clientEmp.post()
 			   .accept(MediaType.APPLICATION_JSON)
@@ -58,10 +61,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 		       .body(BodyInserters.fromValue(enterpriseDto))
 			   .retrieve()
 			   .bodyToMono(EnterpriseDto.class);
-		
-		
-		
-		
+
 	}
 
 	public Mono<Void> delete(String id) {
@@ -74,7 +74,10 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 
 	public Mono<EnterpriseDto> update(EnterpriseDto enterpriseDto, String id) {
 		
-		return clientEmp.post()
+		LOGGER.info("Listo para Actualizar ---> "+enterpriseDto.toString());
+		
+		return clientEmp.put()
+				   .uri("/{id}",Collections.singletonMap("id",id))
 				   .accept(MediaType.APPLICATION_JSON)
 				   .contentType(MediaType.APPLICATION_JSON)
 				   .syncBody(enterpriseDto)
