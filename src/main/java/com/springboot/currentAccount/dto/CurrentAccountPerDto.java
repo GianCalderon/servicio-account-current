@@ -8,7 +8,7 @@ import lombok.Data;
 public class CurrentAccountPerDto {
 
 	private String numberAccount;
-	private String tea;
+	private Double tea;
 	private String state;
 	private Double balance;
 	private List<PersonalDto> holders;

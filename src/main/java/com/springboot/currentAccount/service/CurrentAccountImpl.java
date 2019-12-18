@@ -2,6 +2,9 @@ package com.springboot.currentAccount.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +14,10 @@ import org.springframework.stereotype.Service;
 import com.springboot.currentAccount.client.EnterpriseClient;
 import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
+import com.springboot.currentAccount.dto.CuentaDto;
 import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
+import com.springboot.currentAccount.dto.PersonalDto;
 import com.springboot.currentAccount.repo.CurrentAccountRepo;
 import com.springboot.currentAccount.util.UtilConvert;
 
@@ -90,7 +95,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	}
 
 	@Override
-	public Mono<CurrentAccountPerDto> saveDto(CurrentAccountPerDto currentAccountPerDto) {
+	public Mono<CurrentAccountPerDto> savePerDto(CurrentAccountPerDto currentAccountPerDto) {
 		
 		LOGGER.info(currentAccountPerDto.toString());
 
@@ -98,7 +103,9 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 
 			currentAccountPerDto.getHolders().forEach(p -> {
 
-				p.setIdCuenta(ca.getId());
+				p.setIdAccount(ca.getId());
+				p.setNameAccount("Cuenta-Corriente");
+				
 				webClientPer.save(p).block();
 
 			});
@@ -110,7 +117,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	}
 	
 	@Override
-	public Mono<CurrentAccountEnterDto> saveDto(CurrentAccountEnterDto currentAccountEnterDto) {
+	public Mono<CurrentAccountEnterDto> saveEnterDto(CurrentAccountEnterDto currentAccountEnterDto) {
 		
 		LOGGER.info("service:"+currentAccountEnterDto.toString());
 
@@ -130,6 +137,33 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	public Mono<CurrentAccount> findByNumAccount(String numAccount) {
 		
 		return repo.findByNumberAccount(numAccount);
+	}
+
+	@Override
+	public Mono<PersonalDto> saveAddCuenta(CuentaDto cuentaDto) {
+		
+	    return repo.save(convert.convertCurrentAccount(cuentaDto)).flatMap(c->{
+	    	
+	    	return webClientPer.findById(cuentaDto.getDni()).flatMap(p->{
+	    		
+	    		LOGGER.info("FLUJO ---->: "+p.toString());
+	    		
+	    		List<Map<String,String>> lista=p.getIdCuentas();
+	            
+	    		 Map<String,String> listmap = new HashMap<String,String>();
+	    		 listmap.put(c.getId(),c.getName());
+	             lista.add(listmap);
+	           
+	             p.setIdCuentas(lista);
+	             
+	             LOGGER.info("FLUJO  22 ---->: "+p.toString());
+	             
+	            return webClientPer.update(p,cuentaDto.getDni());
+	            
+	 
+	    	});
+	    	
+	    });
 	}
 	
 	

@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
+import com.springboot.currentAccount.dto.CuentaDto;
 import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
+import com.springboot.currentAccount.dto.PersonalDto;
 import com.springboot.currentAccount.service.CurrentAccountImpl;
 
 import reactor.core.publisher.Flux;
@@ -34,6 +37,9 @@ public class CurrentAccountController {
 
 	@Autowired
 	CurrentAccountImpl service;
+	
+	@Autowired
+	PersonalClient webClientPer;
 
 
 	@GetMapping
@@ -85,7 +91,7 @@ public class CurrentAccountController {
 
 		LOGGER.info(currentAccountPerDto.toString());
 
-		return service.saveDto(currentAccountPerDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+		return service.savePerDto(currentAccountPerDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
 				.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}
@@ -94,10 +100,12 @@ public class CurrentAccountController {
 
 		LOGGER.info(currentAccountEnterDto.toString());
 
-		return service.saveDto(currentAccountEnterDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+		return service.saveEnterDto(currentAccountEnterDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
 				.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}
+	
+	
 	
 	
 	// OPERACIONES QUE EXPONEN SERVICIOS
@@ -112,5 +120,18 @@ public class CurrentAccountController {
 
 	}
 	
+	@PostMapping("/addAccount")
+	public Mono<ResponseEntity<PersonalDto>> saveAddDto(@RequestBody CuentaDto cuentaDto) {
+
+		LOGGER.info(cuentaDto.toString());
+
+		return service.saveAddCuenta(cuentaDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+				.contentType(MediaType.APPLICATION_JSON).body(s));
+
+	}
+	
+	
+	
+
 	
 }
