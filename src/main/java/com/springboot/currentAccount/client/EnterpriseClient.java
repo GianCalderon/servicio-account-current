@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.springboot.currentAccount.dto.EnterpriseDto;
+import com.springboot.currentAccount.dto.PersonalDto;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -23,14 +24,14 @@ public class EnterpriseClient {
 
 private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.class);
 	
-     WebClient clientEmp = WebClient.create("http://localhost:8002/api/enterprise");	
+     WebClient clientEnt = WebClient.create("http://localhost:8002/api/enterprise");	
 
 //	@Autowired
 //	private WebClient clientEmp;
 	
 	public Flux<EnterpriseDto> findAll() {
 		
-		return clientEmp.get().accept(MediaType.APPLICATION_JSON)
+		return clientEnt.get().accept(MediaType.APPLICATION_JSON)
 				.exchange()
 				.flatMapMany(response ->response.bodyToFlux(EnterpriseDto.class));
 	}
@@ -40,7 +41,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 		
 		LOGGER.info("Buscando con ID ---> "+id);
 		
-		return clientEmp.get()
+		return clientEnt.get()
 				.uri("/{id}",Collections.singletonMap("id",id))
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
@@ -55,7 +56,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 		
 		LOGGER.info("Listo para Guardar ---> "+enterpriseDto.toString());
 		
-		return clientEmp.post()
+		return clientEnt.post()
 			   .accept(MediaType.APPLICATION_JSON)
 			   .contentType(MediaType.APPLICATION_JSON)
 		       .body(BodyInserters.fromValue(enterpriseDto))
@@ -66,22 +67,33 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 
 	public Mono<Void> delete(String id) {
 		
-		return clientEmp.delete()
+		return clientEnt.delete()
 				.uri("/{id}",Collections.singletonMap("id",id))
 				.exchange()
 				.then();
 	}
 
-	public Mono<EnterpriseDto> update(EnterpriseDto enterpriseDto, String id) {
+	public Mono<EnterpriseDto> update(EnterpriseDto enterpriseDto, String numDoc) {
 		
 		LOGGER.info("Listo para Actualizar ---> "+enterpriseDto.toString());
 		
-		return clientEmp.put()
-				   .uri("/{id}",Collections.singletonMap("id",id))
+		return clientEnt.put()
+				   .uri("/{id}",Collections.singletonMap("id",numDoc))
 				   .accept(MediaType.APPLICATION_JSON)
 				   .contentType(MediaType.APPLICATION_JSON)
 				   .syncBody(enterpriseDto)
 				   .retrieve()
 				   .bodyToMono(EnterpriseDto.class);
+	}
+	
+	public Mono<EnterpriseDto> findByNumDoc(String numDoc) {
+		
+		Map<String,Object> param=new HashMap<String,Object>();
+		param.put("numDoc", numDoc);
+		return clientEnt.get().uri("/doc/{numDoc}",param)
+				.accept(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.bodyToMono(EnterpriseDto.class);
+		        
 	}
 }

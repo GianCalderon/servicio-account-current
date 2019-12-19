@@ -23,8 +23,8 @@ public class CurrentAccount {
 	private String id;
 	
 	@NotNull(message = "Account name must not be null")
-	@NotEmpty(message = "name may not be empty")
-	private String name;
+	@NotEmpty(message = "nameAccount may not be empty")
+	private String nameAccount;
 	
 	@NotNull(message = "Account numberAccount must not be null")
 	@NotEmpty(message = "numberAccount may not be empty")

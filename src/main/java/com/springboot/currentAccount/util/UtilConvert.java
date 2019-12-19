@@ -18,8 +18,8 @@ public class UtilConvert {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
-		currentAccount.setName("Cuenta-Corriente");
-		currentAccount.setNumberAccount(currentAccountPerDto.getNumberAccount());
+		currentAccount.setNameAccount("Cuenta-Corriente");
+		currentAccount.setNumberAccount("00103030"+String.valueOf((int)(Math.random()*99999999+1)));
 		currentAccount.setState(currentAccountPerDto.getState());
 		currentAccount.setBalance(currentAccountPerDto.getBalance());
 		currentAccount.setTea(currentAccountPerDto.getTea());
@@ -32,12 +32,12 @@ public class UtilConvert {
 
 	}
 	
-	public CurrentAccount convertCurrentAccountEnter(CurrentAccountEnterDto currentAccountEnterDto) {
+	public CurrentAccount convertCurrentAccountEnt(CurrentAccountEnterDto currentAccountEnterDto) {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
-		currentAccount.setName("Cuenta-Corriente");
-		currentAccount.setNumberAccount(currentAccountEnterDto.getNumberAccount());
+		currentAccount.setNameAccount("Cuenta-Corriente");
+		currentAccount.setNumberAccount("00103030"+String.valueOf((int)(Math.random()*99999999+1)));
 		currentAccount.setState(currentAccountEnterDto.getState());
 		currentAccount.setBalance(currentAccountEnterDto.getBalance());
 		currentAccount.setTea(currentAccountEnterDto.getTea());
@@ -51,12 +51,12 @@ public class UtilConvert {
 
 	}
 	
-	public CurrentAccount convertCurrentAccount(CuentaDto cuentaDto) {
+	public CurrentAccount convertCurrentAccountAdd(CuentaDto cuentaDto) {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
-		currentAccount.setName("Cuenta-Corriente");
-		currentAccount.setNumberAccount(cuentaDto.getNumberAccount());
+		currentAccount.setNameAccount("Cuenta-Corriente");
+		currentAccount.setNumberAccount("00103030"+String.valueOf((int)(Math.random()*99999999+1)));
 		currentAccount.setState(cuentaDto.getState());
 		currentAccount.setBalance(cuentaDto.getBalance());
 		currentAccount.setTea(cuentaDto.getTea());
@@ -64,9 +64,9 @@ public class UtilConvert {
 		currentAccount.setUpdateDate(new Date());
 		currentAccount.setIdOperation(new ArrayList<String>());
 
-		
 		return currentAccount;
 
 	}
+
 
 }

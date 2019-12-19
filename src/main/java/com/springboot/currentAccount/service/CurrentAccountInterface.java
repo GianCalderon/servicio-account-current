@@ -23,8 +23,12 @@ public interface CurrentAccountInterface {
 	public Mono<CurrentAccountEnterDto> saveEnterDto(CurrentAccountEnterDto currentAccountEnterDto);
 	public Mono<CurrentAccount> findByNumAccount(String numAccount);
 	
-	public Mono<PersonalDto> saveAddCuentaPer(CuentaDto cuentaDto);
-	public Mono<EnterpriseDto> saveAddCuentaEnt(CuentaDto cuentaDto);
+	public Mono<PersonalDto> saveAddCuentaPer(CuentaDto CuentaDto);
+	public Mono<EnterpriseDto> saveAddCuentaEnt(CuentaDto CuentaDto);
+	
+
+	
+
 	
 	
 	

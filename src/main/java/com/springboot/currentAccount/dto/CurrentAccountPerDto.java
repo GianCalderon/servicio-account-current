@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class CurrentAccountPerDto {
 
-	private String numberAccount;
+	
 	private Double tea;
 	private String state;
 	private Double balance;

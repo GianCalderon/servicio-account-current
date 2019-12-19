@@ -6,8 +6,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -41,9 +39,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClient.clas
 
 	public Mono<PersonalDto> findById(String id) {
 		
-		Map<String,Object> param=new HashMap<String,Object>();
-		param.put("id", id);
-		return clientPer.get().uri("/{id}",param)
+		
+		return clientPer.get()
+				.uri("/{id}",Collections.singletonMap("id",id))
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
 				.bodyToMono(PersonalDto.class);
@@ -89,6 +87,18 @@ private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClient.clas
 				   .syncBody(personalDto)
 				   .retrieve()
 				   .bodyToMono(PersonalDto.class);
+	}
+	
+	public Mono<PersonalDto> findByNumDoc(String id) {
+		
+		return clientPer.get()
+				.uri("doc/{id}",Collections.singletonMap("id",id))
+				.accept(MediaType.APPLICATION_JSON)
+				.retrieve()
+				.bodyToMono(PersonalDto.class);
+		        
+//		        .exchange()
+//		        .flatMapMany(response ->response.bodyToMono(FamilyDTO.class));
 	}
 
 }

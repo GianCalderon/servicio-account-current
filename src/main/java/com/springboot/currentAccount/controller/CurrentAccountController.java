@@ -94,7 +94,7 @@ public class CurrentAccountController {
 	@PostMapping("/personal")
 	public Mono<ResponseEntity<CurrentAccountPerDto>> saveDto(@RequestBody CurrentAccountPerDto currentAccountPerDto) {
 
-		LOGGER.info(currentAccountPerDto.toString());
+		LOGGER.info("Controlle ----> : "+currentAccountPerDto.toString());
 
 		return service.savePerDto(currentAccountPerDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
 				.contentType(MediaType.APPLICATION_JSON).body(s));
@@ -109,18 +109,7 @@ public class CurrentAccountController {
 				.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}
-	
 
-	
-	@GetMapping("/cuenta/{numAccount}")
-	public Mono<ResponseEntity<CurrentAccount>> searchByNumDoc(@PathVariable String numAccount) {
-		
-		LOGGER.info("NUMERO DE CUENTA :--->"+numAccount);
-
-		return service.findByNumAccount(numAccount).map(s -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(s))
-				.defaultIfEmpty(ResponseEntity.notFound().build());
-
-	}
 	
 	@PostMapping("/addAccountPer")
 	public Mono<ResponseEntity<PersonalDto>> saveAddDtoPer(@RequestBody CuentaDto cuentaDto) {

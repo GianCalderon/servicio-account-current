@@ -5,9 +5,10 @@ import lombok.Data;
 @Data
 public class CurrentAccountEnterDto {
 
-	private String numberAccount;
+	
 	private Double tea;
 	private String state;
 	private Double balance;
-	private EnterpriseDto holders;
+	
+	private EnterpriseDto headline;
 }
