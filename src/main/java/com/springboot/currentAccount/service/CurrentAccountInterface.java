@@ -26,6 +26,10 @@ public interface CurrentAccountInterface {
 	public Mono<PersonalDto> saveAddCuentaPer(CuentaDto CuentaDto);
 	public Mono<EnterpriseDto> saveAddCuentaEnt(CuentaDto CuentaDto);
 	
+	public Mono<PersonalDto> validPer(CuentaDto cuentaDto) ;
+	
+	public Mono<EnterpriseDto> validEnt(CuentaDto cuentaDto) ;
+	
 
 	
 

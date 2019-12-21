@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.springboot.currentAccount.client.EnterpriseClient;
 import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
+import com.springboot.currentAccount.dto.AccountDto;
 import com.springboot.currentAccount.dto.CuentaDto;
 import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
@@ -152,9 +153,9 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	    		
 	    		LOGGER.info("Flujo Inicial ---->: "+titular.toString());
 	            
-	    		
+	    		titular.setIdCuenta("002");
 	    		titular.setNameAccount(c.getNameAccount());
-	    		titular.setIdAccount(c.getId());
+	    		titular.setIdAccount(c.getNumberAccount());
 	    		
 
 	             LOGGER.info("Flujo Final ----->: "+titular.toString());
@@ -190,6 +191,84 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	    	});
 	    	
 	    });
+	}
+	
+	@Override
+	public Mono<PersonalDto> validPer(CuentaDto cuentaDto) {
+	 
+		
+	    return webClientPer.validPer(cuentaDto.getNumDoc()).collectList().flatMap(c->{
+	    	int cont=0;
+	    	LOGGER.info("PRUEBA 2 --->"+c.toString());
+	    	LOGGER.info("PRUEBA 2.1 --->"+c.size());
+	    	 for (int i=0; i<c.size();i++) {
+	    		 
+	    		 AccountDto obj=c.get(i);
+	    		
+
+		    		
+	    		 LOGGER.info("PRUEBA 3 --->"+cuentaDto.toString());
+		    	if(obj.getIdAccount().substring(0,6).equals("001020")) {
+		    			
+		    	       cont++;
+		    	
+		    	}
+					
+				}
+
+	    	 LOGGER.info("contador "+cont);
+	    	 if(cont==0) {
+	    		 
+	    		 return saveAddCuentaPer(cuentaDto);
+	    		 
+	    	 }else {
+	    		 
+	    		 return Mono.empty();
+	    	 }
+	    	 
+//	    	 return Mono.empty();
+	     });
+	     
+	    
+	}
+	
+	@Override
+	public Mono<EnterpriseDto> validEnt(CuentaDto cuentaDto) {
+	 
+		
+	    return webClientEnt.validEnt(cuentaDto.getNumDoc()).collectList().flatMap(c->{
+	    	int cont=0;
+	    	LOGGER.info("PRUEBA 2 --->"+c.toString());
+	    	LOGGER.info("PRUEBA 2.1 --->"+c.size());
+	    	 for (int i=0; i<c.size();i++) {
+	    		 
+	    		 AccountDto obj=c.get(i);
+	    		
+
+		    		
+	    		 LOGGER.info("PRUEBA 3 --->"+cuentaDto.toString());
+		    	if(obj.getIdAccount().substring(0,6).equals("001020")) {
+		    			
+		    	       cont++;
+		    	
+		    	}
+					
+				}
+
+	    	 LOGGER.info("contador "+cont);
+	    	 if(cont==0) {
+	    		 
+	    		 return saveAddCuentaEnt(cuentaDto);
+	    		 
+	    	 }else {
+	    		 
+	    		 return Mono.empty();
+	    	 }
+	    	 
+//	    	 return Mono.empty();
+	     });
+	     
+	    
 	}
 
 
