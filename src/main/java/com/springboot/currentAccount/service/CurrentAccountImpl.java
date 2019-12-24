@@ -11,13 +11,14 @@ import org.springframework.stereotype.Service;
 import com.springboot.currentAccount.client.EnterpriseClient;
 import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
+import com.springboot.currentAccount.dto.AccountClient;
 import com.springboot.currentAccount.dto.AccountDto;
-import com.springboot.currentAccount.dto.CuentaDto;
-import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
 import com.springboot.currentAccount.dto.EnterpriseDto;
+import com.springboot.currentAccount.dto.OperationDto;
 import com.springboot.currentAccount.dto.PersonalDto;
 import com.springboot.currentAccount.repo.CurrentAccountRepo;
+import com.springboot.currentAccount.util.CodAccount;
 import com.springboot.currentAccount.util.UtilConvert;
 
 import reactor.core.publisher.Flux;
@@ -38,10 +39,10 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	UtilConvert convert;
 	
 	@Autowired
-	PersonalClient webClientPer;
+	PersonalClient client;
 	
 	@Autowired
-	EnterpriseClient webClientEnt;
+	EnterpriseClient clientEnt;
 
 	
 	@Override
@@ -93,183 +94,136 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 		return repo.delete(currentAccount);
 	}
 
-	@Override
-	public Mono<CurrentAccountPerDto> savePerDto(CurrentAccountPerDto currentAccountPerDto) {
-		
-		LOGGER.info(currentAccountPerDto.toString());
-
-		return save(convert.convertCurrentAccountPer(currentAccountPerDto)).flatMap(sa -> {
-
-			currentAccountPerDto.getHolders().forEach(titular -> {
-
-				titular.setNameAccount(sa.getNameAccount());
-				titular.setIdAccount(sa.getId());
-
-				webClientPer.save(titular).block();
-
-			});
-
-			return Mono.just(currentAccountPerDto);
-		});
-		
-		
-	}
-	
-	@Override
-	public Mono<CurrentAccountEnterDto> saveEnterDto(CurrentAccountEnterDto currentAccountEnterDto) {
-		
-		LOGGER.info("service:"+currentAccountEnterDto.toString());
-
-		return save(convert.convertCurrentAccountEnt(currentAccountEnterDto)).flatMap(sa -> {
-
-              currentAccountEnterDto.getHeadline().setIdAccount(sa.getId());
-              currentAccountEnterDto.getHeadline().setNameAccount(sa.getNameAccount());
-
-		
-		
-		
-			webClientEnt.save(currentAccountEnterDto.getHeadline()).block();
-			
-
-			return Mono.just(currentAccountEnterDto);
-		});
-		
-		
-  }
 	
 	@Override
 	public Mono<CurrentAccount> findByNumAccount(String numAccount) {
 		
 		return repo.findByNumberAccount(numAccount);
 	}
-
-	@Override
-	public Mono<PersonalDto> saveAddCuentaPer(CuentaDto cuentaDto) {
-		
-		
-	    return repo.save(convert.convertCurrentAccountAdd(cuentaDto)).flatMap(c->{
-	    	
-	    	return webClientPer.findByNumDoc(cuentaDto.getNumDoc()).flatMap(titular->{
-	    		
-	    		LOGGER.info("Flujo Inicial ---->: "+titular.toString());
-	            
-	    		titular.setIdCuenta("002");
-	    		titular.setNameAccount(c.getNameAccount());
-	    		titular.setIdAccount(c.getNumberAccount());
-	    		
-
-	             LOGGER.info("Flujo Final ----->: "+titular.toString());
-	             
-	            return webClientPer.update(titular,cuentaDto.getNumDoc());
-	            
-	 
-	    	});
-	    	
-	    });
-	}
-
+	
 	
 	@Override
-	public Mono<EnterpriseDto> saveAddCuentaEnt(CuentaDto cuentaDto) {
-	    
-		return repo.save(convert.convertCurrentAccountAdd(cuentaDto)).flatMap(c->{
-	    	
-	    	return webClientEnt.findByNumDoc(cuentaDto.getNumDoc()).flatMap(titular->{
-	    		
-	    		LOGGER.info("Flujo Inicial ---->: "+titular.toString());
-	            
-	    		
-	    		titular.setNameAccount(c.getNameAccount());
-	    		titular.setIdAccount(c.getId());
-	    		
+	public Mono<CurrentAccount> saveOperation(OperationDto operationDto) {
+		
+		return repo.findByNumberAccount(operationDto.getNumAccount()).flatMap(p->{
 
-	             LOGGER.info("Flujo Final ----->: "+titular.toString());
-	             
-	            return webClientEnt.update(titular,cuentaDto.getNumDoc());
-	            
-	 
-	    	});
-	    	
-	    });
+			if(operationDto.getTipoMovement().equals("debito")) {
+				
+				p.setBalance(p.getBalance()-operationDto.getAmount());
+				return repo.save(p);
+				
+			}else if(operationDto.getTipoMovement().equals("abono")) {
+				
+				p.setBalance(p.getBalance()+operationDto.getAmount());
+				return repo.save(p);
+			}
+			
+			return repo.save(p);
+
+		});
 	}
 	
-	@Override
-	public Mono<PersonalDto> validPer(CuentaDto cuentaDto) {
-	 
-		
-	    return webClientPer.validPer(cuentaDto.getNumDoc()).collectList().flatMap(c->{
-	    	int cont=0;
-	    	LOGGER.info("PRUEBA 2 --->"+c.toString());
-	    	LOGGER.info("PRUEBA 2.1 --->"+c.size());
-	    	 for (int i=0; i<c.size();i++) {
-	    		 
-	    		 AccountDto obj=c.get(i);
-	    		
 
-		    		
-	    		 LOGGER.info("PRUEBA 3 --->"+cuentaDto.toString());
-		    	if(obj.getIdAccount().substring(0,6).equals("001020")) {
-		    			
-		    	       cont++;
-		    	
-		    	}
-					
+	@Override
+	public Mono<PersonalDto> saveHeadline(AccountDto accountDto) {
+	
+     return client.extractAccounts(accountDto.getNumDoc()).collectList().flatMap(cuentas -> {
+			
+			int cont = 0;
+
+		     for (int i = 0; i < cuentas.size(); i++) {
+
+					AccountClient obj = cuentas.get(i);
+
+					LOGGER.info("PRUEBA 3 --->" + accountDto.toString());
+
+				    if (obj.getNumberAccount().substring(0, 6).equals(CodAccount.currentAccount)) cont++;
+
+				}
+		     
+				if (cont == 0) {
+
+					return repo.save(convert.convertAccountEnt(accountDto)).flatMap(cuenta -> {
+
+						return client.findByNumDoc(accountDto.getNumDoc()).flatMap(titular -> {
+
+							LOGGER.info("Flujo Inicial ---->: " + titular.toString());
+
+							titular.setIdAccount(cuenta.getId());
+							titular.setNameAccount(cuenta.getNameAccount());
+							titular.setNumberAccount(cuenta.getNumberAccount());
+
+							LOGGER.info("Flujo Final ----->: " + titular.toString());
+
+							return client.update(titular, accountDto.getNumDoc()).flatMap(p->{
+								
+								p.setIdAccount(cuenta.getId());
+								return Mono.just(p);
+							});
+
+						});
+
+					});
+
+				} else {
+
+					return Mono.empty();
 				}
 
-	    	 LOGGER.info("contador "+cont);
-	    	 if(cont==0) {
-	    		 
-	    		 return saveAddCuentaPer(cuentaDto);
-	    		 
-	    	 }else {
-	    		 
-	    		 return Mono.empty();
-	    	 }
-	    	 
-//	    	 return Mono.empty();
-	     });
-	     
-	    
+			});
+	}
+
+	@Override
+	public Mono<CurrentAccountPerDto> saveHeadlines(CurrentAccountPerDto currentAccountPerDto) {
+		
+		return save(convert.convertCurrentAccountPer(currentAccountPerDto)).flatMap(cuenta -> {
+
+			currentAccountPerDto.getHeadlines().forEach(titular -> {
+
+				titular.setIdAccount(cuenta.getId());
+				titular.setNameAccount(cuenta.getNameAccount());
+				titular.setNumberAccount(cuenta.getNumberAccount());
+
+				client.save(titular);
+
+			});
+
+			return Mono.just(currentAccountPerDto);
+		});
 	}
 	
+	
+	
+	
 	@Override
-	public Mono<EnterpriseDto> validEnt(CuentaDto cuentaDto) {
-	 
-		
-	    return webClientEnt.validEnt(cuentaDto.getNumDoc()).collectList().flatMap(c->{
-	    	int cont=0;
-	    	LOGGER.info("PRUEBA 2 --->"+c.toString());
-	    	LOGGER.info("PRUEBA 2.1 --->"+c.size());
-	    	 for (int i=0; i<c.size();i++) {
-	    		 
-	    		 AccountDto obj=c.get(i);
-	    		
+	public Mono<EnterpriseDto> saveEnterprise(AccountDto accountDto) {
 
-		    		
-	    		 LOGGER.info("PRUEBA 3 --->"+cuentaDto.toString());
-		    	if(obj.getIdAccount().substring(0,6).equals("001020")) {
-		    			
-		    	       cont++;
-		    	
-		    	}
+
+		LOGGER.info("Service 1---> :"+accountDto.toString());
+
+					return clientEnt.findByNumDoc(accountDto.getNumDoc()).flatMap(enteprise -> {
+						
+						LOGGER.info("Service 2---> :"+enteprise.toString());
+						
+						return repo.save(convert.convertAccountEnt(accountDto)).flatMap(cuenta -> {
+
+						LOGGER.info("Flujo Inicial ---->: " + enteprise.toString());
+
+						enteprise.setIdAccount(cuenta.getId());
+						enteprise.setNameAccount(cuenta.getNameAccount());
+						enteprise.setNumberAccount(cuenta.getNumberAccount());
+
+						LOGGER.info("Flujo Final ----->: " + enteprise.toString());
+
+						return clientEnt.update(enteprise, accountDto.getNumDoc());
 					
-				}
 
-	    	 LOGGER.info("contador "+cont);
-	    	 if(cont==0) {
-	    		 
-	    		 return saveAddCuentaEnt(cuentaDto);
-	    		 
-	    	 }else {
-	    		 
-	    		 return Mono.empty();
-	    	 }
-	    	 
-//	    	 return Mono.empty();
-	     });
-	     
-	    
-	}
+					});
+
+				});
+
+				} 
+	
 
 
 	

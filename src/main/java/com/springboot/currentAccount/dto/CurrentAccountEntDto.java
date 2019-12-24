@@ -3,12 +3,12 @@ package com.springboot.currentAccount.dto;
 import lombok.Data;
 
 @Data
-public class CuentaDto {
+public class CurrentAccountEntDto {
+
 	
-	private String numDoc;
 	private Double tea;
 	private String state;
 	private Double balance;
 	
-
+	private EnterpriseDto headline;
 }

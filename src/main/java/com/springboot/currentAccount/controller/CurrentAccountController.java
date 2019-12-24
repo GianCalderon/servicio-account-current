@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
-import com.springboot.currentAccount.dto.CuentaDto;
-import com.springboot.currentAccount.dto.CurrentAccountEnterDto;
+import com.springboot.currentAccount.dto.AccountDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
 import com.springboot.currentAccount.dto.EnterpriseDto;
 import com.springboot.currentAccount.dto.PersonalDto;
@@ -39,8 +37,6 @@ public class CurrentAccountController {
 	@Autowired
 	CurrentAccountImpl service;
 	
-	@Autowired
-	PersonalClient webClientPer;
 
 
 	@GetMapping
@@ -91,43 +87,53 @@ public class CurrentAccountController {
 	
 	// OPERACIONES QUE EXPONEN SERVICIOS
 
-	@PostMapping("/personal")
-	public Mono<ResponseEntity<CurrentAccountPerDto>> saveDto(@RequestBody CurrentAccountPerDto currentAccountPerDto) {
 
-		LOGGER.info("Controlle ----> : "+currentAccountPerDto.toString());
+//	@PostMapping("/enterprise")
+//	public Mono<ResponseEntity<CurrentAccountEntDto>> saveDto(@RequestBody CurrentAccountEntDto currentAccountEntDto) {
+//
+//		LOGGER.info("Controlle ----> : "+currentAccountEntDto.toString());
+//
+//		return service.saveEnterDto(currentAccountEntDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+//				.contentType(MediaType.APPLICATION_JSON).body(s));
+//
+//	}
+//
+//
+//	
+	@PostMapping("/saveEnterprise")
+	public Mono<ResponseEntity<EnterpriseDto>> saveEnterprise(@RequestBody AccountDto accountDto) {
 
-		return service.savePerDto(currentAccountPerDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
-				.contentType(MediaType.APPLICATION_JSON).body(s));
+		LOGGER.info("Controller ---> :"+accountDto.toString());
 
-	}
-	@PostMapping("/enterprise")
-	public Mono<ResponseEntity<CurrentAccountEnterDto>> saveDto(@RequestBody CurrentAccountEnterDto currentAccountEnterDto) {
+		return service.saveEnterprise(accountDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+				.contentType(MediaType.APPLICATION_JSON).body(s))
+				.defaultIfEmpty(new ResponseEntity<EnterpriseDto>(HttpStatus.CONFLICT));
 
-		LOGGER.info("Controlle ----> : "+currentAccountEnterDto.toString());
-
-		return service.saveEnterDto(currentAccountEnterDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
-				.contentType(MediaType.APPLICATION_JSON).body(s));
-
-	}
-
-	
-	@PostMapping("/addAccountPer")
-	public Mono<ResponseEntity<PersonalDto>> saveAddDtoPer(@RequestBody CuentaDto cuentaDto) {
-
-		LOGGER.info(cuentaDto.toString());
-
-		return service.saveAddCuentaPer(cuentaDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
-				.contentType(MediaType.APPLICATION_JSON).body(s));
 
 	}
 	
-	@PostMapping("/addAccountEnt")
-	public Mono<ResponseEntity<EnterpriseDto>> saveAddDtoEnt(@RequestBody CuentaDto cuentaDto) {
+	
+	@PostMapping("/saveHeadline")
+	public Mono<ResponseEntity<PersonalDto>> saveHeadline(@RequestBody AccountDto accountDto) {
 
-		LOGGER.info(cuentaDto.toString());
+		LOGGER.info("Controller ---> :"+accountDto.toString());
 
-		return service.saveAddCuentaEnt(cuentaDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
-				.contentType(MediaType.APPLICATION_JSON).body(s));
+		return service.saveHeadline(accountDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+				.contentType(MediaType.APPLICATION_JSON).body(s))
+				.defaultIfEmpty(new ResponseEntity<PersonalDto>(HttpStatus.CONFLICT));
+
+
+	}
+	
+	
+	@PostMapping("/saveHeadlines")
+	public Mono<ResponseEntity<CurrentAccountPerDto>> saveHeadlines(@RequestBody CurrentAccountPerDto currentAccountPerDto) {
+
+		LOGGER.info("Controller ----> "+currentAccountPerDto.toString());
+
+		return service.saveHeadlines(currentAccountPerDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
+				.contentType(MediaType.APPLICATION_JSON).body(s))
+				.defaultIfEmpty(new ResponseEntity<CurrentAccountPerDto>(HttpStatus.CONFLICT));
 
 	}
 	

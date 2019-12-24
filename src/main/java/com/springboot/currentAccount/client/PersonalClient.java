@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.springboot.currentAccount.dto.AccountDto;
+import com.springboot.currentAccount.dto.AccountClient;
 import com.springboot.currentAccount.dto.PersonalDto;
 
 import reactor.core.publisher.Flux;
@@ -102,14 +102,18 @@ private static final Logger LOGGER = LoggerFactory.getLogger(PersonalClient.clas
 //		        .flatMapMany(response ->response.bodyToMono(FamilyDTO.class));
 	}
 	
-	public Flux<AccountDto> validPer(String dni) {
+	public Flux<AccountClient> extractAccounts(String dni) {
 
 		return clientPer.get()
 				.uri("/valid/{dni}",Collections.singletonMap("dni",dni))
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
-				.bodyToFlux(AccountDto.class);
+				.bodyToFlux(AccountClient.class);
 			
 	}
+	
+	
+	
+	
 
 }

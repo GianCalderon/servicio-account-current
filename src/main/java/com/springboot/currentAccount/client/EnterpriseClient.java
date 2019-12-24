@@ -1,8 +1,6 @@
 package com.springboot.currentAccount.client;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.springboot.currentAccount.dto.AccountDto;
+import com.springboot.currentAccount.dto.AccountClient;
 import com.springboot.currentAccount.dto.EnterpriseDto;
 
 import reactor.core.publisher.Flux;
@@ -84,11 +82,10 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 				   .bodyToMono(EnterpriseDto.class);
 	}
 	
-	public Mono<EnterpriseDto> findByNumDoc(String numDoc) {
-		
-		Map<String,Object> param=new HashMap<String,Object>();
-		param.put("numDoc", numDoc);
-		return clientEnt.get().uri("/doc/{numDoc}",param)
+	public Mono<EnterpriseDto> findByNumDoc(String ruc) {
+
+		return clientEnt.get()
+				.uri("/doc/{ruc}",Collections.singletonMap("ruc",ruc))
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
 				.bodyToMono(EnterpriseDto.class);
@@ -96,13 +93,13 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 	}
 	
 	
-	public Flux<AccountDto> validEnt(String dni) {
+	public Flux<AccountClient> extractAccounts(String ruc) {
 
 		return clientEnt.get()
-				.uri("/valid/{dni}",Collections.singletonMap("dni",dni))
+				.uri("/valid/{ruc}",Collections.singletonMap("ruc",ruc))
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
-				.bodyToFlux(AccountDto.class);
+				.bodyToFlux(AccountClient.class);
 			
 	}
 }
