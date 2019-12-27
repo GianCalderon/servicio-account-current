@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 @Data
-@Document(collection = "currentAccount")
+@Document(collection = "Cuenta-Corriente")
 public class CurrentAccount {
 	
 	@Id

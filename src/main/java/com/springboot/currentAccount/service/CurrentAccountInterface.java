@@ -25,7 +25,7 @@ public interface CurrentAccountInterface {
 	public Mono<PersonalDto> saveHeadline(AccountDto accountDto);     
 	public Mono<CurrentAccountPerDto> saveHeadlines (CurrentAccountPerDto currentAccountPerDto);
 	
-	public Mono<EnterpriseDto> saveEnterprise(AccountDto accountDto);
+	public Mono<CurrentAccount> saveEnterprise(AccountDto accountDto);
 	
 
 	

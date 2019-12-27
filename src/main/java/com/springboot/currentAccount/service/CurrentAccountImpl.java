@@ -137,7 +137,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 
 					LOGGER.info("PRUEBA 3 --->" + accountDto.toString());
 
-				    if (obj.getNumberAccount().substring(0, 6).equals(CodAccount.currentAccount)) cont++;
+				    if (obj.getNumberAccount().substring(0, 6).equals(CodAccount.COD_CURRENT_ACCOUNT)) cont++;
 
 				}
 		     
@@ -196,7 +196,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 	
 	
 	@Override
-	public Mono<EnterpriseDto> saveEnterprise(AccountDto accountDto) {
+	public Mono<CurrentAccount> saveEnterprise(AccountDto accountDto) {
 
 
 		LOGGER.info("Service 1---> :"+accountDto.toString());
@@ -215,7 +215,9 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 
 						LOGGER.info("Flujo Final ----->: " + enteprise.toString());
 
-						return clientEnt.update(enteprise, accountDto.getNumDoc());
+						 clientEnt.update(enteprise, accountDto.getNumDoc()).block();
+						 
+						 return Mono.just(cuenta);
 					
 
 					});

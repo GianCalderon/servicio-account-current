@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.springboot.currentAccount.document.CurrentAccount;
 import com.springboot.currentAccount.dto.AccountDto;
 import com.springboot.currentAccount.dto.CurrentAccountPerDto;
-import com.springboot.currentAccount.dto.EnterpriseDto;
 import com.springboot.currentAccount.dto.PersonalDto;
 import com.springboot.currentAccount.service.CurrentAccountImpl;
 
@@ -66,6 +65,8 @@ public class CurrentAccountController {
 	@PutMapping("/{id}")
 	public Mono<ResponseEntity<CurrentAccount>> update(@RequestBody CurrentAccount currentAccount,
 			@PathVariable String id) {
+		
+		LOGGER.info("Controller ---> :"+currentAccount.toString());
 
 		return service.update(currentAccount, id)
 				.map(s -> ResponseEntity.created(URI.create("/api/currentAccount".concat(s.getId())))
@@ -87,27 +88,15 @@ public class CurrentAccountController {
 	
 	// OPERACIONES QUE EXPONEN SERVICIOS
 
-
-//	@PostMapping("/enterprise")
-//	public Mono<ResponseEntity<CurrentAccountEntDto>> saveDto(@RequestBody CurrentAccountEntDto currentAccountEntDto) {
-//
-//		LOGGER.info("Controlle ----> : "+currentAccountEntDto.toString());
-//
-//		return service.saveEnterDto(currentAccountEntDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
-//				.contentType(MediaType.APPLICATION_JSON).body(s));
-//
-//	}
-//
-//
-//	
+	
 	@PostMapping("/saveEnterprise")
-	public Mono<ResponseEntity<EnterpriseDto>> saveEnterprise(@RequestBody AccountDto accountDto) {
+	public Mono<ResponseEntity<CurrentAccount>> saveEnterprise(@RequestBody AccountDto accountDto) {
 
 		LOGGER.info("Controller ---> :"+accountDto.toString());
 
 		return service.saveEnterprise(accountDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
 				.contentType(MediaType.APPLICATION_JSON).body(s))
-				.defaultIfEmpty(new ResponseEntity<EnterpriseDto>(HttpStatus.CONFLICT));
+				.defaultIfEmpty(new ResponseEntity<CurrentAccount>(HttpStatus.CONFLICT));
 
 
 	}
@@ -134,6 +123,17 @@ public class CurrentAccountController {
 		return service.saveHeadlines(currentAccountPerDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
 				.contentType(MediaType.APPLICATION_JSON).body(s))
 				.defaultIfEmpty(new ResponseEntity<CurrentAccountPerDto>(HttpStatus.CONFLICT));
+
+	}
+	
+	
+	@GetMapping("/cuenta/{numberAccount}")
+	public Mono<ResponseEntity<CurrentAccount>> searchByNumAccount(@PathVariable String numberAccount) {
+		
+		LOGGER.info("NUMERO DE CUENTA :--->"+numberAccount);
+
+		return service.findByNumAccount(numberAccount).map(s -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(s))
+				.defaultIfEmpty(ResponseEntity.notFound().build());
 
 	}
 	

@@ -22,8 +22,8 @@ public class UtilConvert {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
-		currentAccount.setNameAccount("Cuenta-Corriente");
-		currentAccount.setNumberAccount("00103030"+String.valueOf((int)(Math.random()*99999999+1)));
+		currentAccount.setNameAccount(CodAccount.NAME_CURRENT_ACCOUNT);
+		currentAccount.setNumberAccount(CodAccount.COD_CURRENT_ACCOUNT+String.valueOf((int)(Math.random()*99999999+1)));
 		currentAccount.setState(currentAccountPerDto.getState());
 		currentAccount.setBalance(currentAccountPerDto.getBalance());
 		currentAccount.setTea(currentAccountPerDto.getTea());
@@ -43,8 +43,8 @@ public class UtilConvert {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
-		currentAccount.setNameAccount("Cuenta-Corriente");
-		currentAccount.setNumberAccount("00103030"+String.valueOf((int)(Math.random()*99999999+1)));
+		currentAccount.setNameAccount(CodAccount.NAME_CURRENT_ACCOUNT);
+		currentAccount.setNumberAccount(CodAccount.COD_CURRENT_ACCOUNT+String.valueOf((int)(Math.random()*99999999+1)));
 		currentAccount.setState(accountDto.getState());
 		currentAccount.setBalance(accountDto.getBalance());
 		currentAccount.setTea(accountDto.getTea());
@@ -63,8 +63,8 @@ public class UtilConvert {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
-		currentAccount.setNameAccount("Cuenta-Corriente");
-		currentAccount.setNumberAccount("00103030"+String.valueOf((int)(Math.random()*99999999+1)));
+		currentAccount.setNameAccount(CodAccount.NAME_CURRENT_ACCOUNT);
+		currentAccount.setNumberAccount(CodAccount.COD_CURRENT_ACCOUNT+String.valueOf((int)(Math.random()*99999999+1)));
 		currentAccount.setState(currentAccountEntDto.getState());
 		currentAccount.setBalance(currentAccountEntDto.getBalance());
 		currentAccount.setTea(currentAccountEntDto.getTea());
@@ -81,8 +81,8 @@ public class UtilConvert {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
-		currentAccount.setNameAccount("Cuenta-Corriente");
-		currentAccount.setNumberAccount("00103030"+String.valueOf((int)(Math.random()*99999999+1)));
+		currentAccount.setNameAccount(CodAccount.NAME_CURRENT_ACCOUNT);
+		currentAccount.setNumberAccount(CodAccount.COD_CURRENT_ACCOUNT+String.valueOf((int)(Math.random()*99999999+1)));
 		currentAccount.setState(accountDto.getState());
 		currentAccount.setBalance(accountDto.getBalance());
 		currentAccount.setTea(accountDto.getTea());
