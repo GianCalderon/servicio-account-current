@@ -4,6 +4,8 @@ import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -19,11 +21,10 @@ import reactor.core.publisher.Mono;
 public class EnterpriseClient {
 
 private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.class);
-	
-     WebClient clientEnt = WebClient.create("http://localhost:8002/api/enterprise");	
 
-//	@Autowired
-//	private WebClient clientEmp;
+	@Autowired
+	@Qualifier("enterprise")
+	private WebClient clientEnt;
 	
 	public Flux<EnterpriseDto> findAll() {
 		

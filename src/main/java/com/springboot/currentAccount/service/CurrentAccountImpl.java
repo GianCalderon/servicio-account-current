@@ -184,7 +184,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 				titular.setNameAccount(cuenta.getNameAccount());
 				titular.setNumberAccount(cuenta.getNumberAccount());
 
-				client.save(titular);
+				client.save(titular).block();
 
 			});
 
