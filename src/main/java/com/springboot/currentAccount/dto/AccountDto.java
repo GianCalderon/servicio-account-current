@@ -6,8 +6,7 @@ import lombok.Data;
 public class AccountDto {
 	
 	private String numDoc;
-	private Double tea;
-	private String state;
+	private String nameBank;
 	private Double balance;
 	
 

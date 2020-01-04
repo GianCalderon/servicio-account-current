@@ -143,7 +143,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 		     
 				if (cont == 0) {
 
-					return repo.save(convert.convertAccountEnt(accountDto)).flatMap(cuenta -> {
+					return repo.save(convert.convertAccount(accountDto)).flatMap(cuenta -> {
 
 						return client.findByNumDoc(accountDto.getNumDoc()).flatMap(titular -> {
 
@@ -158,6 +158,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 							return client.update(titular, accountDto.getNumDoc()).flatMap(p->{
 								
 								p.setIdAccount(cuenta.getId());
+								p.setNumDoc(cuenta.getNumDoc());
 								return Mono.just(p);
 							});
 
@@ -205,7 +206,7 @@ public class CurrentAccountImpl implements CurrentAccountInterface {
 						
 						LOGGER.info("Service 2---> :"+enteprise.toString());
 						
-						return repo.save(convert.convertAccountEnt(accountDto)).flatMap(cuenta -> {
+						return repo.save(convert.convertAccount(accountDto)).flatMap(cuenta -> {
 
 						LOGGER.info("Flujo Inicial ---->: " + enteprise.toString());
 

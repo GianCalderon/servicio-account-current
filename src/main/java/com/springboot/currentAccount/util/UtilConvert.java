@@ -19,9 +19,12 @@ public class UtilConvert {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UtilConvert.class);
 	
 	public CurrentAccount convertCurrentAccountPer(CurrentAccountPerDto currentAccountPerDto) {
+		
+	
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
+		
 		currentAccount.setNameAccount(CodAccount.NAME_CURRENT_ACCOUNT);
 		currentAccount.setNumberAccount(CodAccount.COD_CURRENT_ACCOUNT+String.valueOf((int)(Math.random()*99999999+1)));
 		currentAccount.setState(currentAccountPerDto.getState());
@@ -36,18 +39,19 @@ public class UtilConvert {
 
 	}
 	
-	public CurrentAccount convertAccountEnt(AccountDto accountDto) {
+	public CurrentAccount convertAccount(AccountDto accountDto) {
 
 		
 		LOGGER.info("Convert ---> :"+accountDto.toString());
 
 		CurrentAccount  currentAccount = new CurrentAccount();
-
+		
+		currentAccount.setNumDoc(accountDto.getNumDoc());
 		currentAccount.setNameAccount(CodAccount.NAME_CURRENT_ACCOUNT);
 		currentAccount.setNumberAccount(CodAccount.COD_CURRENT_ACCOUNT+String.valueOf((int)(Math.random()*99999999+1)));
-		currentAccount.setState(accountDto.getState());
+		currentAccount.setState("Activo");
 		currentAccount.setBalance(accountDto.getBalance());
-		currentAccount.setTea(accountDto.getTea());
+		currentAccount.setTea(13.0);
 		currentAccount.setCreateDate(new Date());
 		currentAccount.setUpdateDate(new Date());
 		currentAccount.setIdOperation(new ArrayList<String>());
@@ -63,6 +67,7 @@ public class UtilConvert {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
+		currentAccount.setNumDoc(currentAccountEntDto.getHeadline().getNumDoc());
 		currentAccount.setNameAccount(CodAccount.NAME_CURRENT_ACCOUNT);
 		currentAccount.setNumberAccount(CodAccount.COD_CURRENT_ACCOUNT+String.valueOf((int)(Math.random()*99999999+1)));
 		currentAccount.setState(currentAccountEntDto.getState());
@@ -81,11 +86,12 @@ public class UtilConvert {
 
 		CurrentAccount  currentAccount = new CurrentAccount();
 
+		currentAccount.setNumDoc(accountDto.getNumDoc());
 		currentAccount.setNameAccount(CodAccount.NAME_CURRENT_ACCOUNT);
 		currentAccount.setNumberAccount(CodAccount.COD_CURRENT_ACCOUNT+String.valueOf((int)(Math.random()*99999999+1)));
-		currentAccount.setState(accountDto.getState());
+		currentAccount.setState("Activo");
 		currentAccount.setBalance(accountDto.getBalance());
-		currentAccount.setTea(accountDto.getTea());
+		currentAccount.setTea(13.0);
 		currentAccount.setCreateDate(new Date());
 		currentAccount.setUpdateDate(new Date());
 		currentAccount.setIdOperation(new ArrayList<String>());

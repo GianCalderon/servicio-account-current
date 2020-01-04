@@ -26,6 +26,8 @@ public class CurrentAccount {
 	@NotEmpty(message = "nameAccount may not be empty")
 	private String nameAccount;
 	
+	private String numDoc;
+	
 	@NotNull(message = "Account numberAccount must not be null")
 	@NotEmpty(message = "numberAccount may not be empty")
 	private String numberAccount;
