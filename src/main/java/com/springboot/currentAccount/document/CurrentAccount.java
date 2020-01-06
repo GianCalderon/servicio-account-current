@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,25 +17,30 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 @Data
-@Document(collection = "Cuenta-Corriente")
+@Document(collection = "CurrentAccount")
 public class CurrentAccount {
 	
 	@Id
 	private String id;
 	
 	@NotNull(message = "Account name must not be null")
-	@NotEmpty(message = "nameAccount may not be empty")
+	@NotEmpty(message = "name may not be empty")
 	private String nameAccount;
 	
-	private String numDoc;
+	@NotNull(message = "Account name must not be null")
+	@NotEmpty(message = "name may not be empty")
+	private String nameBank;
+
+	private List<Headline> headlines;
 	
 	@NotNull(message = "Account numberAccount must not be null")
 	@NotEmpty(message = "numberAccount may not be empty")
 	private String numberAccount;
 	
+	
 	@NotNull(message = "Account tea must not be null")
-	@Min(10)
-	@Max(24)
+	@Min(12)
+	@Max(20)
 	private Double tea;
 	
 	@NotNull(message = "Account state must not be null")
@@ -50,7 +56,28 @@ public class CurrentAccount {
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date updateDate;
+
+
+	public CurrentAccount(String nameAccount, String numberAccount, Double tea, String state, Double balance,
+			Date createDate, Date updateDate) {
+		
 	
-	private List<String> idOperation; 
+		this.nameAccount = nameAccount;
+		this.numberAccount = numberAccount;
+		this.tea = tea;
+		this.state = state;
+		this.balance = balance;
+		this.createDate = createDate;
+		this.updateDate = updateDate;
+	}
+
+	public CurrentAccount() {
+	
+	}
+	
+	
+	
+	
+	
 
 }

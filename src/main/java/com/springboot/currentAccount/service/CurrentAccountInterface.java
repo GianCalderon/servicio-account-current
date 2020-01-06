@@ -2,36 +2,27 @@ package com.springboot.currentAccount.service;
 
 import com.springboot.currentAccount.document.CurrentAccount;
 import com.springboot.currentAccount.dto.AccountDto;
-import com.springboot.currentAccount.dto.CurrentAccountEntDto;
-import com.springboot.currentAccount.dto.CurrentAccountPerDto;
-import com.springboot.currentAccount.dto.EnterpriseDto;
-import com.springboot.currentAccount.dto.OperationDto;
-import com.springboot.currentAccount.dto.PersonalDto;
+import com.springboot.currentAccount.dto.ManageOperationDto;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface CurrentAccountInterface {
+public interface CurrentAccountInterface{
 
-	
 	public Flux<CurrentAccount> findAll();
 	public Mono<CurrentAccount> findById(String id);
-	public Mono<CurrentAccount> save(CurrentAccount currentAccount);
-	public Mono<CurrentAccount> update(CurrentAccount currentAccount ,String id);
-	public Mono<Void> delete(CurrentAccount currentAccount);
-	
-	public Mono<CurrentAccount> findByNumAccount(String numAccount);
-	public Mono<CurrentAccount> saveOperation(OperationDto operationDto);	
-	public Mono<PersonalDto> saveHeadline(AccountDto accountDto);     
-	public Mono<CurrentAccountPerDto> saveHeadlines (CurrentAccountPerDto currentAccountPerDto);
-	
+	public Mono<CurrentAccount> savePersonal(AccountDto accountDto);
 	public Mono<CurrentAccount> saveEnterprise(AccountDto accountDto);
+	public Mono<CurrentAccount> update(CurrentAccount CurrentAccount, String id);
+	public Mono<Void> delete(CurrentAccount CurrentAccount);
+
+	public Mono<CurrentAccount> findByNumAccount(String numAccount);
+	public Flux<CurrentAccount> findByNumDoc(String numDoc);
+	
+	public Flux<ManageOperationDto> searchOperations(String numDoc);
 	
 
 	
+    
 
-	
-	
-	
-	
 }

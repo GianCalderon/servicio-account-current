@@ -17,26 +17,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.currentAccount.client.PersonalClient;
 import com.springboot.currentAccount.document.CurrentAccount;
 import com.springboot.currentAccount.dto.AccountDto;
-import com.springboot.currentAccount.dto.CurrentAccountPerDto;
-import com.springboot.currentAccount.dto.PersonalDto;
+import com.springboot.currentAccount.dto.ManageOperationDto;
 import com.springboot.currentAccount.service.CurrentAccountImpl;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/currentAccount")
+@RequestMapping("api/currentAccount")
 public class CurrentAccountController {
 
-	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CurrentAccountController.class);
 
 	@Autowired
 	CurrentAccountImpl service;
 	
-
+	@Autowired
+	PersonalClient client;
 
 	@GetMapping
 	public Mono<ResponseEntity<Flux<CurrentAccount>>> toList() {
@@ -47,26 +47,44 @@ public class CurrentAccountController {
 
 	@GetMapping("/{id}")
 	public Mono<ResponseEntity<CurrentAccount>> search(@PathVariable String id) {
-
+		
 		return service.findById(id).map(s -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(s))
 				.defaultIfEmpty(ResponseEntity.notFound().build());
 
 	}
+	
+	@PostMapping("/savePer")
+	public Mono<ResponseEntity<CurrentAccount>> savePersonal(@RequestBody AccountDto accountDto) {
+		
+		LOGGER.info("accountDto ---> "+accountDto.toString());
 
-	@PostMapping
-	public Mono<ResponseEntity<CurrentAccount>> save(@RequestBody CurrentAccount currentAccount) {
-
-		return service.save(currentAccount)
+		return service.savePersonal(accountDto)
 				.map(s -> ResponseEntity.created(URI.create("/api/currentAccount".concat(s.getId())))
-						.contentType(MediaType.APPLICATION_JSON).body(s));
+						 .contentType(MediaType.APPLICATION_JSON).body(s))
+				         .defaultIfEmpty(new ResponseEntity<CurrentAccount>(HttpStatus.NOT_FOUND));
 
 	}
+	
+	@PostMapping("/saveEnt")
+	public Mono<ResponseEntity<CurrentAccount>> saveEnterprise(@RequestBody AccountDto accountDto) {
+		
+		LOGGER.info("accountDto ---> "+accountDto.toString());
+
+		return service.saveEnterprise(accountDto)
+				.map(s -> ResponseEntity.created(URI.create("/api/currentAccount".concat(s.getId())))
+						 .contentType(MediaType.APPLICATION_JSON).body(s))
+				         .defaultIfEmpty(new ResponseEntity<CurrentAccount>(HttpStatus.NOT_FOUND));
+
+	}
+	
+	
 
 	@PutMapping("/{id}")
 	public Mono<ResponseEntity<CurrentAccount>> update(@RequestBody CurrentAccount currentAccount,
 			@PathVariable String id) {
 		
-		LOGGER.info("Controller ---> :"+currentAccount.toString());
+		
+		LOGGER.info("Controller ----> "+currentAccount.toString());
 
 		return service.update(currentAccount, id)
 				.map(s -> ResponseEntity.created(URI.create("/api/currentAccount".concat(s.getId())))
@@ -74,6 +92,7 @@ public class CurrentAccountController {
 				.defaultIfEmpty(ResponseEntity.notFound().build());
 
 	}
+	
 
 	@DeleteMapping("/{id}")
 	public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
@@ -84,50 +103,17 @@ public class CurrentAccountController {
 
 	}
 	
-	
-	
-	// OPERACIONES QUE EXPONEN SERVICIOS
+	//OPERACIONES QUE CONSUMEN SERVICIO
 
 	
-	@PostMapping("/saveEnterprise")
-	public Mono<ResponseEntity<CurrentAccount>> saveEnterprise(@RequestBody AccountDto accountDto) {
-
-		LOGGER.info("Controller ---> :"+accountDto.toString());
-
-		return service.saveEnterprise(accountDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
-				.contentType(MediaType.APPLICATION_JSON).body(s))
-				.defaultIfEmpty(new ResponseEntity<CurrentAccount>(HttpStatus.CONFLICT));
-
+	@GetMapping("/numDoc/{numDoc}")
+	public Flux<CurrentAccount> searchByDni(@PathVariable String numDoc) {
+				
+		return service.findByNumDoc(numDoc);
 
 	}
 	
-	
-	@PostMapping("/saveHeadline")
-	public Mono<ResponseEntity<PersonalDto>> saveHeadline(@RequestBody AccountDto accountDto) {
-
-		LOGGER.info("Controller ---> :"+accountDto.toString());
-
-		return service.saveHeadline(accountDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
-				.contentType(MediaType.APPLICATION_JSON).body(s))
-				.defaultIfEmpty(new ResponseEntity<PersonalDto>(HttpStatus.CONFLICT));
-
-
-	}
-	
-	
-	@PostMapping("/saveHeadlines")
-	public Mono<ResponseEntity<CurrentAccountPerDto>> saveHeadlines(@RequestBody CurrentAccountPerDto currentAccountPerDto) {
-
-		LOGGER.info("Controller ----> "+currentAccountPerDto.toString());
-
-		return service.saveHeadlines(currentAccountPerDto).map(s -> ResponseEntity.created(URI.create("/api/currentAccount"))
-				.contentType(MediaType.APPLICATION_JSON).body(s))
-				.defaultIfEmpty(new ResponseEntity<CurrentAccountPerDto>(HttpStatus.CONFLICT));
-
-	}
-	
-	
-	@GetMapping("/cuenta/{numberAccount}")
+	@GetMapping("/account/{numberAccount}")
 	public Mono<ResponseEntity<CurrentAccount>> searchByNumAccount(@PathVariable String numberAccount) {
 		
 		LOGGER.info("NUMERO DE CUENTA :--->"+numberAccount);
@@ -137,8 +123,16 @@ public class CurrentAccountController {
 
 	}
 	
-	
+	@GetMapping("/operations/{numDoc}")
+	public Flux<ManageOperationDto> searchOperations(@PathVariable String numDoc) {
+		
+		return service.searchOperations(numDoc);
+
+	}
 	
 
 	
+	
+	
+
 }

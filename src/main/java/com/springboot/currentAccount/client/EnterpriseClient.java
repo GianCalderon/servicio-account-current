@@ -86,7 +86,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(EnterpriseClient.cl
 	public Mono<EnterpriseDto> findByNumDoc(String ruc) {
 
 		return clientEnt.get()
-				.uri("/doc/{ruc}",Collections.singletonMap("ruc",ruc))
+				.uri("/numDoc/{ruc}",Collections.singletonMap("ruc",ruc))
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
 				.bodyToMono(EnterpriseDto.class);
